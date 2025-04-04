@@ -68,6 +68,7 @@ defmodule RosterWeb.Router do
       on_mount: [{RosterWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
+      live "/workers", WorkerLive.Index, :index
     end
   end
 

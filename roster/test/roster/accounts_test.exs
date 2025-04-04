@@ -60,7 +60,8 @@ defmodule Roster.AccountsTest do
     end
 
     test "validates email and password when given" do
-      {:error, changeset} = Accounts.register_user(%{email: "not valid", password: "not valid", role: "invalid"})
+      {:error, changeset} =
+        Accounts.register_user(%{email: "not valid", password: "not valid", role: "invalid"})
 
       assert %{
                email: ["must have the @ sign and no spaces"],
@@ -71,7 +72,10 @@ defmodule Roster.AccountsTest do
 
     test "validates maximum values for email and password for security" do
       too_long = String.duplicate("db", 100)
-      {:error, changeset} = Accounts.register_user(%{email: too_long, password: too_long, role: "manager"})
+
+      {:error, changeset} =
+        Accounts.register_user(%{email: too_long, password: too_long, role: "manager"})
+
       assert "should be at most 160 character(s)" in errors_on(changeset).email
       assert "should be at most 72 character(s)" in errors_on(changeset).password
     end
@@ -82,7 +86,9 @@ defmodule Roster.AccountsTest do
       assert "has already been taken" in errors_on(changeset).email
 
       # Now try with the upper cased email too, to check that email case is ignored.
-      {:error, changeset} = Accounts.register_user(%{email: String.upcase(email), role: "manager"})
+      {:error, changeset} =
+        Accounts.register_user(%{email: String.upcase(email), role: "manager"})
+
       assert "has already been taken" in errors_on(changeset).email
     end
 

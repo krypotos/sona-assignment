@@ -350,4 +350,11 @@ defmodule Roster.Accounts do
       {:error, :user, changeset, _} -> {:error, changeset}
     end
   end
+
+  @doc """
+  Lists all workers.
+  """
+  def list_workers do
+    Repo.all(from u in User, where: u.role == "worker", preload: [:work_types])
+  end
 end

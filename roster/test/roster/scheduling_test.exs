@@ -21,7 +21,11 @@ defmodule Roster.SchedulingTest do
     end
 
     test "create_shift/1 with valid data creates a shift" do
-      valid_attrs = %{description: "some description", start_time: ~U[2025-03-31 16:00:00Z], end_time: ~U[2025-03-31 16:00:00Z]}
+      valid_attrs = %{
+        description: "some description",
+        start_time: ~U[2025-03-31 16:00:00Z],
+        end_time: ~U[2025-03-31 16:00:00Z]
+      }
 
       assert {:ok, %Shift{} = shift} = Scheduling.create_shift(valid_attrs)
       assert shift.description == "some description"
@@ -35,7 +39,12 @@ defmodule Roster.SchedulingTest do
 
     test "update_shift/2 with valid data updates the shift" do
       shift = shift_fixture()
-      update_attrs = %{description: "some updated description", start_time: ~U[2025-04-01 16:00:00Z], end_time: ~U[2025-04-01 16:00:00Z]}
+
+      update_attrs = %{
+        description: "some updated description",
+        start_time: ~U[2025-04-01 16:00:00Z],
+        end_time: ~U[2025-04-01 16:00:00Z]
+      }
 
       assert {:ok, %Shift{} = shift} = Scheduling.update_shift(shift, update_attrs)
       assert shift.description == "some updated description"
@@ -138,7 +147,9 @@ defmodule Roster.SchedulingTest do
     test "create_worker_availability/1 with valid data creates a worker_availability" do
       valid_attrs = %{available: true, day_of_week: "some day_of_week"}
 
-      assert {:ok, %WorkerAvailability{} = worker_availability} = Scheduling.create_worker_availability(valid_attrs)
+      assert {:ok, %WorkerAvailability{} = worker_availability} =
+               Scheduling.create_worker_availability(valid_attrs)
+
       assert worker_availability.available == true
       assert worker_availability.day_of_week == "some day_of_week"
     end
@@ -151,21 +162,31 @@ defmodule Roster.SchedulingTest do
       worker_availability = worker_availability_fixture()
       update_attrs = %{available: false, day_of_week: "some updated day_of_week"}
 
-      assert {:ok, %WorkerAvailability{} = worker_availability} = Scheduling.update_worker_availability(worker_availability, update_attrs)
+      assert {:ok, %WorkerAvailability{} = worker_availability} =
+               Scheduling.update_worker_availability(worker_availability, update_attrs)
+
       assert worker_availability.available == false
       assert worker_availability.day_of_week == "some updated day_of_week"
     end
 
     test "update_worker_availability/2 with invalid data returns error changeset" do
       worker_availability = worker_availability_fixture()
-      assert {:error, %Ecto.Changeset{}} = Scheduling.update_worker_availability(worker_availability, @invalid_attrs)
+
+      assert {:error, %Ecto.Changeset{}} =
+               Scheduling.update_worker_availability(worker_availability, @invalid_attrs)
+
       assert worker_availability == Scheduling.get_worker_availability!(worker_availability.id)
     end
 
     test "delete_worker_availability/1 deletes the worker_availability" do
       worker_availability = worker_availability_fixture()
-      assert {:ok, %WorkerAvailability{}} = Scheduling.delete_worker_availability(worker_availability)
-      assert_raise Ecto.NoResultsError, fn -> Scheduling.get_worker_availability!(worker_availability.id) end
+
+      assert {:ok, %WorkerAvailability{}} =
+               Scheduling.delete_worker_availability(worker_availability)
+
+      assert_raise Ecto.NoResultsError, fn ->
+        Scheduling.get_worker_availability!(worker_availability.id)
+      end
     end
 
     test "change_worker_availability/1 returns a worker_availability changeset" do

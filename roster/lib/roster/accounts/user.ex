@@ -1,6 +1,7 @@
 defmodule Roster.Accounts.User do
   use Ecto.Schema
   import Ecto.Changeset
+  alias Roster.Scheduling.WorkType
 
   schema "users" do
     field :email, :string
@@ -9,6 +10,8 @@ defmodule Roster.Accounts.User do
     field :current_password, :string, virtual: true, redact: true
     field :confirmed_at, :utc_datetime
     field :role, :string, default: "manager"
+
+    many_to_many :work_types, WorkType, join_through: "user_work_types"
 
     timestamps(type: :utc_datetime)
   end
