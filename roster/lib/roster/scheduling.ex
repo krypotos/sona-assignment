@@ -198,4 +198,126 @@ defmodule Roster.Scheduling do
     WorkType.changeset(work_type, attrs)
   end
 
+  alias Roster.Scheduling.WorkerAvailability
+
+  @doc """
+  Returns the list of worker_availabilities.
+
+  ## Examples
+
+      iex> list_worker_availabilities()
+      [%WorkerAvailability{}, ...]
+
+  """
+  def list_worker_availabilities do
+    Repo.all(WorkerAvailability)
+  end
+
+  @doc """
+  Gets a single worker_availability.
+
+  Raises `Ecto.NoResultsError` if the Worker availability does not exist.
+
+  ## Examples
+
+      iex> get_worker_availability!(123)
+      %WorkerAvailability{}
+
+      iex> get_worker_availability!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_worker_availability!(id), do: Repo.get!(WorkerAvailability, id)
+
+  @doc """
+  Creates a worker_availability.
+
+  ## Examples
+
+      iex> create_worker_availability(%{field: value})
+      {:ok, %WorkerAvailability{}}
+
+      iex> create_worker_availability(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_worker_availability(attrs \\ %{}) do
+    %WorkerAvailability{}
+    |> WorkerAvailability.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a worker_availability.
+
+  ## Examples
+
+      iex> update_worker_availability(worker_availability, %{field: new_value})
+      {:ok, %WorkerAvailability{}}
+
+      iex> update_worker_availability(worker_availability, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_worker_availability(%WorkerAvailability{} = worker_availability, attrs) do
+    worker_availability
+    |> WorkerAvailability.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a worker_availability.
+
+  ## Examples
+
+      iex> delete_worker_availability(worker_availability)
+      {:ok, %WorkerAvailability{}}
+
+      iex> delete_worker_availability(worker_availability)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_worker_availability(%WorkerAvailability{} = worker_availability) do
+    Repo.delete(worker_availability)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking worker_availability changes.
+
+  ## Examples
+
+      iex> change_worker_availability(worker_availability)
+      %Ecto.Changeset{data: %WorkerAvailability{}}
+
+  """
+  def change_worker_availability(%WorkerAvailability{} = worker_availability, attrs \\ %{}) do
+    WorkerAvailability.changeset(worker_availability, attrs)
+  end
+
+  @doc """
+  Gets a worker's availability by user_id.
+  Returns nil if no availability record exists.
+  """
+  def get_worker_availability_by_user(user_id) do
+    query =
+      from wa in WorkerAvailability,
+        where: wa.user_id == ^user_id,
+        select: wa
+
+    Repo.one(query)
+  end
+
+  @doc """
+  Gets or creates a worker availability record for a user.
+  Ensures each user has exactly one record.
+  """
+  def get_or_create_worker_availability(user_id) do
+    case get_worker_availability_by_user(user_id) do
+      nil ->
+        create_worker_availability(%{user_id: user_id, unavailable_days: []})
+
+      availability ->
+        {:ok, availability}
+    end
+  end
 end

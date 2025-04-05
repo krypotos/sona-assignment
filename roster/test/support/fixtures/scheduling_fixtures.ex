@@ -40,4 +40,17 @@ defmodule Roster.SchedulingFixtures do
     work_type
   end
 
+  @doc """
+  Generate a worker_availability.
+  """
+  def worker_availability_fixture(attrs \\ %{}) do
+    {:ok, worker_availability} =
+      attrs
+      |> Enum.into(%{
+        unavailable_days: ["option1", "option2"]
+      })
+      |> Roster.Scheduling.create_worker_availability()
+
+    worker_availability
+  end
 end

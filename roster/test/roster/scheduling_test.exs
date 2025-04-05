@@ -126,13 +126,12 @@ defmodule Roster.SchedulingTest do
     end
   end
 
-<<<<<<< HEAD
   describe "worker_availabilities" do
     alias Roster.Scheduling.WorkerAvailability
 
     import Roster.SchedulingFixtures
 
-    @invalid_attrs %{available: nil, day_of_week: nil}
+    @invalid_attrs %{unavailable_days: nil}
 
     test "list_worker_availabilities/0 returns all worker_availabilities" do
       worker_availability = worker_availability_fixture()
@@ -145,13 +144,12 @@ defmodule Roster.SchedulingTest do
     end
 
     test "create_worker_availability/1 with valid data creates a worker_availability" do
-      valid_attrs = %{available: true, day_of_week: "some day_of_week"}
+      valid_attrs = %{unavailable_days: ["option1", "option2"]}
 
       assert {:ok, %WorkerAvailability{} = worker_availability} =
                Scheduling.create_worker_availability(valid_attrs)
 
-      assert worker_availability.available == true
-      assert worker_availability.day_of_week == "some day_of_week"
+      assert worker_availability.unavailable_days == ["option1", "option2"]
     end
 
     test "create_worker_availability/1 with invalid data returns error changeset" do
@@ -160,13 +158,12 @@ defmodule Roster.SchedulingTest do
 
     test "update_worker_availability/2 with valid data updates the worker_availability" do
       worker_availability = worker_availability_fixture()
-      update_attrs = %{available: false, day_of_week: "some updated day_of_week"}
+      update_attrs = %{unavailable_days: ["option1"]}
 
       assert {:ok, %WorkerAvailability{} = worker_availability} =
                Scheduling.update_worker_availability(worker_availability, update_attrs)
 
-      assert worker_availability.available == false
-      assert worker_availability.day_of_week == "some updated day_of_week"
+      assert worker_availability.unavailable_days == ["option1"]
     end
 
     test "update_worker_availability/2 with invalid data returns error changeset" do
@@ -194,6 +191,4 @@ defmodule Roster.SchedulingTest do
       assert %Ecto.Changeset{} = Scheduling.change_worker_availability(worker_availability)
     end
   end
-=======
->>>>>>> 2df5c82 (remove availability)
 end
