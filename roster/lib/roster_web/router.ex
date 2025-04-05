@@ -13,6 +13,10 @@ defmodule RosterWeb.Router do
     plug :fetch_current_user
   end
 
+  pipeline :manager_only do
+    plug Roster.Plugs.RequireRole, "manager"
+  end
+
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -62,13 +66,23 @@ defmodule RosterWeb.Router do
   end
 
   scope "/", RosterWeb do
+    pipe_through [:browser, :manager_only]
+
+    live_session :manager_only,
+      on_mount: [{RosterWeb.UserAuth, :ensure_authenticated}] do
+      live "/shifts", ShiftLive.Index, :index
+      live "/workers", WorkerLive.Index, :index
+    end
+
+  end
+
+  scope "/", RosterWeb do
     pipe_through [:browser, :require_authenticated_user]
 
     live_session :require_authenticated_user,
       on_mount: [{RosterWeb.UserAuth, :ensure_authenticated}] do
       live "/users/settings", UserSettingsLive, :edit
       live "/users/settings/confirm_email/:token", UserSettingsLive, :confirm_email
-      live "/workers", WorkerLive.Index, :index
       live "/availability", WorkerAvailabilityLive.Index, :index
     end
   end

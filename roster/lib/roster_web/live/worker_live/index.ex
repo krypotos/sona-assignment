@@ -6,21 +6,16 @@ defmodule RosterWeb.WorkerLive.Index do
   def mount(_params, _session, socket) do
     current_user = socket.assigns.current_user
 
-    if current_user.role != "manager" do
-      {:ok,
-       socket
-       |> put_flash(:error, "You are not authorized to access this page")
-       |> redirect(to: ~p"/")}
-    else
-      workers = Accounts.list_workers()
-      work_types = WorkType.list_work_types()
 
-      {:ok,
-       socket
-       |> assign(:workers, workers)
-       |> assign(:work_types, work_types)
-       |> assign(:page_title, "Workers")}
-    end
+    workers = Accounts.list_workers()
+    work_types = WorkType.list_work_types()
+
+    {:ok,
+      socket
+      |> assign(:workers, workers)
+      |> assign(:work_types, work_types)
+      |> assign(:page_title, "Workers")}
+
   end
 
   def handle_params(params, _url, socket) do
