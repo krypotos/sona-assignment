@@ -12,47 +12,87 @@
     </script>
   </head>
   <body class="bg-white">
-    <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end">
-      <%= if @current_user do %>
-        <li class="text-[0.8125rem] leading-6 text-zinc-900">
-          {@current_user.email}
-        </li>
-        <li>
-          <.link
-            href={~p"/users/settings"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Settings
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_out"}
-            method="delete"
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log out
-          </.link>
-        </li>
-      <% else %>
-        <li>
-          <.link
-            href={~p"/users/register"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Register
-          </.link>
-        </li>
-        <li>
-          <.link
-            href={~p"/users/log_in"}
-            class="text-[0.8125rem] leading-6 text-zinc-900 font-semibold hover:text-zinc-700"
-          >
-            Log in
-          </.link>
-        </li>
-      <% end %>
-    </ul>
+    <nav class="bg-gray-800">
+      <div class="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <div class="flex h-16 items-center justify-between">
+          <div class="flex items-center">
+            <div class="hidden md:block">
+              <div class="ml-10 flex items-baseline space-x-4">
+                <%= if @current_user do %>
+                  <%= if @current_user.role == "manager" do %>
+                    <.link
+                      navigate={~p"/workers"}
+                      class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Workers
+                    </.link>
+                    <.link
+                      navigate={~p"/shifts"}
+                      class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      Shifts
+                    </.link>
+                  <% end %>
+                  <%= if @current_user.role == "worker" do %>
+                    <.link
+                      navigate={~p"/availability"}
+                      class="text-gray-300 hover:bg-gray-700 hover:text-white rounded-md px-3 py-2 text-sm font-medium"
+                    >
+                      My Availability
+                    </.link>
+                  <% end %>
+                <% end %>
+              </div>
+            </div>
+          </div>
+          <div class="flex items-center">
+            <div class="flex-shrink-0">
+              <ul class="relative z-10 flex items-center gap-4 px-4 sm:px-6 lg:px-8 justify-end text-gray-300 ">
+                <%= if @current_user do %>
+                  <li class="text-[0.8125rem] leading-6 ">
+                    {@current_user.email}
+                  </li>
+                  <li>
+                    <.link
+                      href={~p"/users/settings"}
+                      class="text-[0.8125rem] leading-6 hover:font-bold  hover:text-white"
+                    >
+                      Settings
+                    </.link>
+                  </li>
+                  <li>
+                    <.link
+                      href={~p"/users/log_out"}
+                      method="delete"
+                      class="text-[0.8125rem] leading-6 hover:font-bold hover:text-white"
+                    >
+                      Log out
+                    </.link>
+                  </li>
+                <% else %>
+                  <li>
+                    <.link
+                      href={~p"/users/register"}
+                      class="text-[0.8125rem] leading-6 font-semibold hover:font-bold  hover:text-white"
+                    >
+                      Register
+                    </.link>
+                  </li>
+                  <li>
+                    <.link
+                      href={~p"/users/log_in"}
+                      class="text-[0.8125rem] leading-6 font-semibold hover:font-bold  hover:text-white"
+                    >
+                      Log in
+                    </.link>
+                  </li>
+                <% end %>
+              </ul>
+            </div>
+          </div>
+        </div>
+      </div>
+    </nav>
     {@inner_content}
   </body>
 </html>

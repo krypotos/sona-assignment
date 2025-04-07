@@ -7,6 +7,7 @@ defmodule Roster.Scheduling do
   alias Roster.Repo
 
   alias Roster.Scheduling.Shift
+  alias Roster.Scheduling.WorkType
 
   @doc """
   Returns the list of shifts.
@@ -18,7 +19,9 @@ defmodule Roster.Scheduling do
 
   """
   def list_shifts do
-    Repo.all(Shift)
+    Shift
+    |> preload([:work_type, :user])
+    |> Repo.all()
   end
 
   @doc """
@@ -35,7 +38,11 @@ defmodule Roster.Scheduling do
       ** (Ecto.NoResultsError)
 
   """
-  def get_shift!(id), do: Repo.get!(Shift, id)
+  def get_shift!(id) do
+    Shift
+    |> preload([:work_type, :user])
+    |> Repo.get!(id)
+  end
 
   @doc """
   Creates a shift.
@@ -101,8 +108,6 @@ defmodule Roster.Scheduling do
   def change_shift(%Shift{} = shift, attrs \\ %{}) do
     Shift.changeset(shift, attrs)
   end
-
-  alias Roster.Scheduling.WorkType
 
   @doc """
   Returns the list of work_types.

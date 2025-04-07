@@ -73,7 +73,6 @@ defmodule RosterWeb.Router do
       live "/shifts", ShiftLive.Index, :index
       live "/workers", WorkerLive.Index, :index
     end
-
   end
 
   scope "/", RosterWeb do

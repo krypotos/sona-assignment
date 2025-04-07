@@ -1,0 +1,110 @@
+<div class="max-w-7xl mx-auto px-4 py-8">
+  <h1 class="text-2xl font-bold mb-6">Manage Shifts</h1>
+
+  <div class="bg-white shadow rounded-lg p-6 mb-8">
+    <h2 class="text-xl font-semibold mb-4">Create New Shift</h2>
+    <.form for={@form} id="shift-form" phx-change="validate" phx-submit="save" class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+        <div>
+          <.input
+            field={@form[:description]}
+            type="text"
+            label="Description"
+            placeholder="Enter shift description"
+          />
+        </div>
+
+        <div>
+          <.input
+            field={@form[:work_type_id]}
+            type="select"
+            label="Work Type"
+            options={[{"Select a work type", ""} | Enum.map(@work_types, &{&1.name, &1.id})]}
+          />
+        </div>
+
+        <div>
+          <.input field={@form[:start_time]} type="datetime-local" label="Start Time" />
+        </div>
+
+        <div>
+          <.input field={@form[:end_time]} type="datetime-local" label="End Time" />
+        </div>
+        <div>
+          <.input
+            field={@form[:user_id]}
+            type="select"
+            label="Assigned Worker"
+            options={[
+              {"Select a worker to assign the shift", ""} | Enum.map(@workers, &{&1.email, &1.id})
+            ]}
+          />
+        </div>
+      </div>
+
+      <div class="flex justify-end">
+        <.button type="submit" class="bg-blue-600 hover:bg-blue-700">
+          Create Shift
+        </.button>
+      </div>
+    </.form>
+  </div>
+
+  <div class="bg-white shadow rounded-lg p-6">
+    <h2 class="text-xl font-semibold mb-4">Existing Shifts</h2>
+    <div class="overflow-x-auto">
+      <table class="min-w-full divide-y divide-gray-200">
+        <thead class="bg-gray-50">
+          <tr>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Description
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Work Type
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Assigned To
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Start Time
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              End Time
+            </th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+              Actions
+            </th>
+          </tr>
+        </thead>
+        <tbody class="bg-white divide-y divide-gray-200">
+          <%= for shift <- @shifts do %>
+            <tr>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {shift.description}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {shift.work_type.name}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {shift.user.email}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                {shift.start_time}
+              </td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">{shift.end_time}</td>
+              <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <button
+                  phx-click="delete"
+                  phx-value-id={shift.id}
+                  class="text-red-600 hover:text-red-900"
+                >
+                  Delete
+                </button>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

@@ -4,18 +4,14 @@ defmodule RosterWeb.WorkerLive.Index do
   alias Roster.Scheduling.WorkType
 
   def mount(_params, _session, socket) do
-    current_user = socket.assigns.current_user
-
-
     workers = Accounts.list_workers()
     work_types = WorkType.list_work_types()
 
     {:ok,
-      socket
-      |> assign(:workers, workers)
-      |> assign(:work_types, work_types)
-      |> assign(:page_title, "Workers")}
-
+     socket
+     |> assign(:workers, workers)
+     |> assign(:work_types, work_types)
+     |> assign(:page_title, "Workers")}
   end
 
   def handle_params(params, _url, socket) do

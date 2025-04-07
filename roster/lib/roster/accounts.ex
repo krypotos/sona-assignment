@@ -7,6 +7,7 @@ defmodule Roster.Accounts do
   alias Roster.Repo
 
   alias Roster.Accounts.{User, UserToken, UserNotifier}
+  alias Roster.DateUtils
 
   ## Database getters
 
@@ -356,5 +357,45 @@ defmodule Roster.Accounts do
   """
   def list_workers do
     Repo.all(from u in User, where: u.role == "worker", preload: [:work_types])
+  end
+
+  @doc """
+  Lists all workers.
+  """
+  def list_workers_for_shifts do
+    User
+    |> where([u], u.role == "worker")
+    |> Repo.all()
+  end
+
+  def list_available_workers_for_shift(
+        current_user_id,
+        work_type,
+        start_date \\ nil,
+        end_date \\ nil
+      ) do
+    days_of_week =
+      if not (is_nil(start_date) or is_nil(end_date)),
+        do: DateUtils.days_of_week(start_date, end_date),
+        else: []
+
+    conditions =
+      if not is_nil(work_type) do
+        dynamic([u, uwt], uwt.id == ^work_type)
+      else
+        true
+      end
+
+    query =
+      from u in User,
+        join: uwt in assoc(u, :work_types),
+        join: wa in assoc(u, :worker_availability),
+        where: u.role == "worker",
+        or_where: u.id == ^current_user_id,
+        where: not fragment("? && ?", wa.unavailable_days, ^days_of_week),
+        where: ^conditions,
+        preload: [worker_availability: wa, work_types: uwt]
+
+    Repo.all(query)
   end
 end
